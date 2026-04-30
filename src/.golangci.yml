@@ -96,6 +96,11 @@ linters:
     - wrapcheck
     - wsl_v5
 
+  settings:
+    mnd:
+      ignored-functions:
+        - common.RandKey
+
   exclusions:
     generated: strict
     warn-unused: true
@@ -111,10 +116,10 @@ formatters:
     gofmt:
       simplify: true
       rewrite-rules:
-        - pattern: 'interface{}'
-          replacement: 'any'
-        - pattern: 'a[b:len(a)]'
-          replacement: 'a[b:]'
+        - pattern: "interface{}"
+          replacement: "any"
+        - pattern: "a[b:len(a)]"
+          replacement: "a[b:]"
 
     gofumpt:
       extra-rules: true
@@ -134,14 +139,12 @@ issues:
   uniq-by-line: false
   fix: false
 
-
 output:
   sort-order:
     - file
     - linter
     - severity
   show-stats: true
-
 
 # Options for analysis running.
 run:

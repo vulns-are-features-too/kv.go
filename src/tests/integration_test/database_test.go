@@ -43,7 +43,7 @@ func TestSetGetStringLoop(t *testing.T) {
 
 	keys, err := db.GetKeys()
 	require.NoError(t, err)
-	assert.Equal(t, loops, len(keys))
+	assert.Len(t, keys, loops)
 
 	wg.Add(loops)
 
@@ -88,17 +88,19 @@ func TestCopyEachKeyManyTimesWith1GoroutinePerBaseKeyValue(t *testing.T) {
 	wg.Add(baseLen)
 
 	// ACT
-	for k, v := range baseMap {
-		go func(baseKey string, val string) {
+	for k := range baseMap {
+		go func(baseKey string) {
 			oldKey := baseKey
 			newKey := fmt.Sprintf("%s:%d", baseKey, 0)
+
 			for l := range loops {
 				assert.NoError(t, db.Copy(oldKey, newKey))
 				oldKey = newKey
 				newKey = fmt.Sprintf("%s:%d", baseKey, l)
 			}
+
 			wg.Done()
-		}(k, v)
+		}(k)
 	}
 
 	wg.Wait()

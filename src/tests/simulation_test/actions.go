@@ -1,9 +1,9 @@
 package simulation_test
 
 import (
+	"common"
 	"fmt"
 	"strconv"
-	"common"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -51,7 +51,7 @@ type copyAction struct {
 	ta testAgent
 }
 
-func (a copyAction) run(i int64) {
+func (a copyAction) run(_ int64) {
 	key, val := a.ta.getRandKnownData()
 	newKey := common.RandKey(10)
 	a.ta.knownData[newKey] = val

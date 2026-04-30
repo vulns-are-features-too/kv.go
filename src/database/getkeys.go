@@ -1,8 +1,8 @@
 package database
 
 import (
-	"sync"
 	"common"
+	"sync"
 )
 
 type getKeysCommand struct {
