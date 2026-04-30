@@ -24,6 +24,16 @@ func TestSetGetString(t *testing.T) {
 	assert.Equal(t, fmt.Sprintf("\"%s\"", val), result)
 }
 
+func TestGetNonExistentKey(t *testing.T) {
+	t.Parallel()
+
+	api := makeAPI()
+
+	res, err := api.reqRaw("get", "blah")
+	require.NoError(t, err)
+	assert.Equal(t, 404, res.StatusCode)
+}
+
 func TestGetKeys(t *testing.T) {
 	t.Parallel()
 
@@ -57,4 +67,14 @@ func TestCopy(t *testing.T) {
 	newVal, err := api.get(key2)
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("\"%s\"", val), newVal)
+}
+
+func TestCopyNonExistentKey(t *testing.T) {
+	t.Parallel()
+
+	api := makeAPI()
+
+	res, err := api.reqRaw("copy", "foo bar")
+	require.NoError(t, err)
+	assert.Equal(t, 404, res.StatusCode)
 }

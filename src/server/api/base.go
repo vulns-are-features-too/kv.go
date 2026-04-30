@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -106,6 +107,13 @@ func formatFloat[I interface{ float32 | float64 }](i I) string {
 }
 
 func writeError(w http.ResponseWriter, err error) {
-	w.WriteHeader(http.StatusInternalServerError)
+	if _, ok := err.(database.IncompatibleTypeError); ok {
+		w.WriteHeader(http.StatusBadRequest)
+	} else if _, ok := err.(database.NotFoundError); ok {
+		w.WriteHeader(http.StatusNotFound)
+	} else {
+		w.WriteHeader(http.StatusInternalServerError)
+	}
+
 	w.Write([]byte(err.Error()))
 }

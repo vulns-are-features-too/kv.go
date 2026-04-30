@@ -1,7 +1,6 @@
 package database
 
 import (
-	"fmt"
 	"sync"
 )
 
@@ -49,12 +48,4 @@ func (db *kvDatabase) Stop() {
 	db.running = false
 	db.wg.Done()
 	db.wg.Wait()
-}
-
-func NotFoundError(key string) error {
-	return fmt.Errorf("key not found: %s", key)
-}
-
-func IncompatibleTypeError(expected, actual string) error {
-	return fmt.Errorf("Incompatible types: expected %s, got %s", expected, actual)
 }

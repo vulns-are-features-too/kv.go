@@ -21,11 +21,13 @@ func (h getHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	val, err := h.db.Get(key)
 	if err != nil {
 		writeError(w, err)
+		return
 	}
 
 	res, err := createResponse(val)
 	if err != nil {
 		writeError(w, err)
+		return
 	}
 
 	w.Write([]byte(res))

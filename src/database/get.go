@@ -15,7 +15,7 @@ func (cmd getCommand) exec(db *kvDatabase) {
 	if ok {
 		cmd.hook(val, nil)
 	} else {
-		cmd.hook(nil, NotFoundError(cmd.key))
+		cmd.hook(nil, notFoundError(cmd.key))
 	}
 }
 
@@ -40,7 +40,7 @@ func (db *kvDatabase) Get(key string) (string, error) {
 
 	res, ok := val.(string)
 	if !ok {
-		return "", IncompatibleTypeError("string", reflect.TypeOf(val).Name())
+		return "", incompatibleTypeError("string", reflect.TypeOf(val).Name())
 	}
 
 	return res, err

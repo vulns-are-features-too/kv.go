@@ -11,7 +11,7 @@ type copyCommand struct {
 func (cmd copyCommand) exec(db *kvDatabase) {
 	val, ok := db.data[cmd.src]
 	if !ok {
-		cmd.hook(NotFoundError(cmd.src))
+		cmd.hook(notFoundError(cmd.src))
 		return
 	}
 

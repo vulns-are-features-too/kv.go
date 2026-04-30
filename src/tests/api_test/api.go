@@ -20,12 +20,17 @@ func makeAPI() testAPI {
 	}
 }
 
-func (api testAPI) req(endpoint string, data string) (string, error) {
-	resp, err := http.Post(
+func (api testAPI) reqRaw(endpoint string, data string) (*http.Response, error) {
+	//nolint:wrapcheck
+	return http.Post(
 		fmt.Sprintf("%s/%s", api.server, endpoint),
 		"application/x-www-form-urlencoded",
 		strings.NewReader(data),
 	)
+}
+
+func (api testAPI) req(endpoint string, data string) (string, error) {
+	resp, err := api.reqRaw(endpoint, data)
 	if err != nil {
 		return "", fmt.Errorf("API error: %w", err)
 	}
