@@ -22,3 +22,18 @@ func TestSetGetString(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("\"%s\"", val), result)
 }
+
+func TestGetKeys(t *testing.T) {
+	t.Parallel()
+
+	api := makeAPI()
+	key1 := randKey(20)
+	key2 := randKey(20)
+
+	require.NoError(t, api.set(key1, ""))
+	require.NoError(t, api.set(key2, ""))
+
+	result, err := api.getKeys()
+	require.NoError(t, err)
+	assert.Subset(t, result, []string{key1, key2})
+}

@@ -9,6 +9,7 @@ type KvDatabase interface {
 	Start()
 	Stop()
 	Get(key string) (string, error)
+	GetKeys() ([]string, error)
 	Set(key, value string) error
 }
 

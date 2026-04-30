@@ -43,6 +43,15 @@ func (api testAPI) get(key string) (string, error) {
 	return api.req("get", key)
 }
 
+func (api testAPI) getKeys() ([]string, error) {
+	res, err := api.req("getkeys", "")
+	if err != nil {
+		return make([]string, 0), err
+	}
+
+	return strings.Split(res, "\n"), nil
+}
+
 func (api testAPI) set(key, value string) error {
 	_, err := api.req("set", fmt.Sprintf("%s=%s", key, value))
 

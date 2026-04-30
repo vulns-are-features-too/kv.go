@@ -23,3 +23,18 @@ func TestSetGetString(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, "string", s)
 }
+
+func TestGetKeys(t *testing.T) {
+	t.Parallel()
+
+	db := database.MakeDatabase()
+
+	db.Start()
+	defer db.Stop()
+
+	require.NoError(t, db.Set("k1", "v"))
+	require.NoError(t, db.Set("k2", "v"))
+	keys, err := db.GetKeys()
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{"k1", "k2"}, keys)
+}

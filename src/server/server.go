@@ -22,5 +22,6 @@ func MakeServer(db database.KvDatabase) *http.Server {
 
 func registerHandlers(db database.KvDatabase) {
 	http.Handle("/get", api.Get(db))
+	http.Handle("/getkeys", api.GetKeys(db))
 	http.Handle("/set", api.Set(db))
 }

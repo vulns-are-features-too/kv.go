@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -79,6 +80,10 @@ func createResponse(data any) (string, error) {
 
 	if res, ok := data.(float64); ok {
 		return formatFloat(res), nil
+	}
+
+	if res, ok := data.([]string); ok {
+		return strings.Join(res, "\n"), nil
 	}
 
 	return "", fmt.Errorf("unhandled data type in response")

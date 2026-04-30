@@ -29,6 +29,7 @@ func makeAgent(t *testing.T, id int, db database.KvDatabase) testAgent {
 	ta.actions = []action{
 		setAction{ta: ta},
 		getAction{ta: ta},
+		getKeysAction{ta: ta},
 	}
 
 	return ta

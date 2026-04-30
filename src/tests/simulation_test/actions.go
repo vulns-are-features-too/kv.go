@@ -34,3 +34,14 @@ func (a getAction) run(_ int64) {
 	require.NoError(a.ta.t, err)
 	assert.Equal(a.ta.t, val, result)
 }
+
+type getKeysAction struct {
+	ta testAgent
+}
+
+func (a getKeysAction) run(_ int64) {
+	allKeys, err := a.ta.db.GetKeys()
+	require.NoError(a.ta.t, err)
+	ownKeys := getMapKeys(a.ta.knownData)
+	assert.Subset(a.ta.t, allKeys, ownKeys)
+}

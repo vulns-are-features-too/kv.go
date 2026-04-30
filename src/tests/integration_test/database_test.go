@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 // Tests on the database's sync mechanisms
@@ -39,6 +40,10 @@ func TestSetGetStringLoop(t *testing.T) {
 	}
 
 	wg.Wait()
+
+	keys, err := db.GetKeys()
+	require.NoError(t, err)
+	assert.Equal(t, loops, len(keys))
 
 	wg.Add(loops)
 
