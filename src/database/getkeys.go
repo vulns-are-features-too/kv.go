@@ -2,6 +2,7 @@ package database
 
 import (
 	"sync"
+	"common"
 )
 
 type getKeysCommand struct {
@@ -9,7 +10,7 @@ type getKeysCommand struct {
 }
 
 func (cmd getKeysCommand) exec(db *kvDatabase) {
-	keys := getMapKeys(db.data)
+	keys := common.GetMapKeys(db.data)
 	cmd.hook(keys, nil)
 }
 

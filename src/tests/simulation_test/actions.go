@@ -3,6 +3,7 @@ package simulation_test
 import (
 	"fmt"
 	"strconv"
+	"common"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -42,7 +43,7 @@ type getKeysAction struct {
 func (a getKeysAction) run(_ int64) {
 	allKeys, err := a.ta.db.GetKeys()
 	require.NoError(a.ta.t, err)
-	ownKeys := getMapKeys(a.ta.knownData)
+	ownKeys := common.GetMapKeys(a.ta.knownData)
 	assert.Subset(a.ta.t, allKeys, ownKeys)
 }
 
@@ -52,7 +53,7 @@ type copyAction struct {
 
 func (a copyAction) run(i int64) {
 	key, val := a.ta.getRandKnownData()
-	newKey := randKey(10)
+	newKey := common.RandKey(10)
 	a.ta.knownData[newKey] = val
 	err := a.ta.db.Copy(key, newKey)
 	require.NoError(a.ta.t, err)

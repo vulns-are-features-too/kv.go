@@ -1,11 +1,12 @@
-package simulation_test
+// Package common for common utils
+package common
 
 import (
 	"math/rand"
 	"strings"
 )
 
-func getMapKeys[T any](m map[string]T) []string {
+func GetMapKeys[T any](m map[string]T) []string {
 	total := len(m)
 	keys := make([]string, total)
 	i := 0
@@ -16,11 +17,9 @@ func getMapKeys[T any](m map[string]T) []string {
 	return keys
 }
 
-func randKey(chars int) string {
-	const (
-		keyAlphabet    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-		keyAlphabetLen = len(keyAlphabet)
-	)
+func RandKey(chars int) string {
+	const keyAlphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+	const keyAlphabetLen = len(keyAlphabet)
 
 	sb := strings.Builder{}
 	sb.Grow(chars)

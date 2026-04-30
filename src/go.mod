@@ -4,7 +4,10 @@ go 1.26.2
 
 require database v0.0.1
 
-require server v0.0.1
+require (
+	common v0.0.1
+	server v0.0.1
+)
 
 require api v0.0.1 // indirect
 
@@ -20,3 +23,5 @@ replace database => ./database
 replace server => ./server
 
 replace api => ./server/api
+
+replace common => ./common

@@ -3,6 +3,7 @@ package api_test
 import (
 	"fmt"
 	"testing"
+	"common"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -12,8 +13,8 @@ func TestSetGetString(t *testing.T) {
 	t.Parallel()
 
 	api := makeAPI()
-	key := randKey(10)
-	val := randKey(20)
+	key := common.RandKey(10)
+	val := common.RandKey(20)
 
 	err := api.set(key, val)
 	require.NoError(t, err)
@@ -27,8 +28,8 @@ func TestGetKeys(t *testing.T) {
 	t.Parallel()
 
 	api := makeAPI()
-	key1 := randKey(20)
-	key2 := randKey(20)
+	key1 := common.RandKey(20)
+	key2 := common.RandKey(20)
 
 	require.NoError(t, api.set(key1, ""))
 	require.NoError(t, api.set(key2, ""))
@@ -42,8 +43,8 @@ func TestCopy(t *testing.T) {
 	t.Parallel()
 
 	api := makeAPI()
-	key1 := randKey(10)
-	key2 := randKey(20)
+	key1 := common.RandKey(10)
+	key2 := common.RandKey(20)
 	val := "value"
 
 	require.NoError(t, api.set(key1, val))
