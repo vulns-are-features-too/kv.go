@@ -10,51 +10,43 @@ import (
 )
 
 type action interface {
-	run(iteration int64)
+	run(ta testAgent, iteration int64)
 }
 
-type setAction struct {
-	ta testAgent
-}
+type setAction struct{}
 
-func (a setAction) run(i int64) {
-	key := fmt.Sprintf("a%d:s%d", a.ta.id, i)
+func (a setAction) run(ta testAgent, i int64) {
+	key := fmt.Sprintf("a%d:s%d", ta.id, i)
 	val := strconv.FormatInt(i, 10)
-	a.ta.knownData[key] = val
-	err := a.ta.db.Set(key, val)
-	require.NoError(a.ta.t, err)
+	ta.knownData[key] = val
+	err := ta.ctx.db.Set(key, val)
+	require.NoError(ta.ctx.t, err)
 }
 
-type getAction struct {
-	ta testAgent
+type getAction struct{}
+
+func (a getAction) run(ta testAgent, _ int64) {
+	key, val := ta.getRandKnownData()
+	result, err := ta.ctx.db.Get(key)
+	require.NoError(ta.ctx.t, err)
+	assert.Equal(ta.ctx.t, val, result)
 }
 
-func (a getAction) run(_ int64) {
-	key, val := a.ta.getRandKnownData()
-	result, err := a.ta.db.Get(key)
-	require.NoError(a.ta.t, err)
-	assert.Equal(a.ta.t, val, result)
+type getKeysAction struct{}
+
+func (a getKeysAction) run(ta testAgent, _ int64) {
+	allKeys, err := ta.ctx.db.GetKeys()
+	require.NoError(ta.ctx.t, err)
+	ownKeys := common.GetMapKeys(ta.knownData)
+	assert.Subset(ta.ctx.t, allKeys, ownKeys)
 }
 
-type getKeysAction struct {
-	ta testAgent
-}
+type copyAction struct{}
 
-func (a getKeysAction) run(_ int64) {
-	allKeys, err := a.ta.db.GetKeys()
-	require.NoError(a.ta.t, err)
-	ownKeys := common.GetMapKeys(a.ta.knownData)
-	assert.Subset(a.ta.t, allKeys, ownKeys)
-}
-
-type copyAction struct {
-	ta testAgent
-}
-
-func (a copyAction) run(_ int64) {
-	key, val := a.ta.getRandKnownData()
+func (a copyAction) run(ta testAgent, _ int64) {
+	key, val := ta.getRandKnownData()
 	newKey := common.RandKey(10)
-	a.ta.knownData[newKey] = val
-	err := a.ta.db.Copy(key, newKey)
-	require.NoError(a.ta.t, err)
+	ta.knownData[newKey] = val
+	err := ta.ctx.db.Copy(key, newKey)
+	require.NoError(ta.ctx.t, err)
 }

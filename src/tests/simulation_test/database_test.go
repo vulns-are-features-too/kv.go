@@ -19,9 +19,11 @@ func TestSimulation(t *testing.T) {
 	db.Start()
 	defer db.Stop()
 
+	ctx := makeContext(t, db)
+
 	agents := make([]testAgent, agentsCount)
 	for i := range agentsCount {
-		agents[i] = makeAgent(t, i, db)
+		agents[i] = makeAgent(i, ctx)
 	}
 
 	// ACT & ASSERT
