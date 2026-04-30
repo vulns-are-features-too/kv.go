@@ -58,6 +58,12 @@ func (api testAPI) set(key, value string) error {
 	return err
 }
 
+func (api testAPI) copy(srcKey string, dstKey string) error {
+	_, err := api.req("copy", fmt.Sprintf("%s %s", srcKey, dstKey))
+
+	return err
+}
+
 func randKey(chars int) string {
 	const (
 		keyAlphabet    = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"

@@ -60,3 +60,59 @@ func TestSetGetStringLoop(t *testing.T) {
 
 	wg.Wait()
 }
+
+func TestCopyEachKeyManyTimesWith1GoroutinePerBaseKeyValue(t *testing.T) {
+	t.Parallel()
+
+	// ARRANGE
+	loops := 100
+	baseMap := map[string]string{
+		"k1": "v1",
+		"k2": "v2",
+		"k3": "v3",
+		"k4": "v4",
+		"k5": "v5",
+	}
+	baseLen := len(baseMap)
+
+	db := database.MakeDatabase()
+
+	db.Start()
+	defer db.Stop()
+
+	for k, v := range baseMap {
+		require.NoError(t, db.Set(k, v))
+	}
+
+	var wg sync.WaitGroup
+	wg.Add(baseLen)
+
+	// ACT
+	for k, v := range baseMap {
+		go func(baseKey string, val string) {
+			oldKey := baseKey
+			newKey := fmt.Sprintf("%s:%d", baseKey, 0)
+			for l := range loops {
+				assert.NoError(t, db.Copy(oldKey, newKey))
+				oldKey = newKey
+				newKey = fmt.Sprintf("%s:%d", baseKey, l)
+			}
+			wg.Done()
+		}(k, v)
+	}
+
+	wg.Wait()
+
+	// ASSERT
+	for k, v := range baseMap {
+		for l := range loops - 1 {
+			result, err := db.Get(fmt.Sprintf("%s:%d", k, l))
+			require.NoError(t, err)
+			assert.Equal(t, v, result)
+		}
+	}
+
+	keys, err := db.GetKeys()
+	require.NoError(t, err)
+	assert.Len(t, keys, loops*baseLen)
+}

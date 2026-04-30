@@ -45,3 +45,15 @@ func (a getKeysAction) run(_ int64) {
 	ownKeys := getMapKeys(a.ta.knownData)
 	assert.Subset(a.ta.t, allKeys, ownKeys)
 }
+
+type copyAction struct {
+	ta testAgent
+}
+
+func (a copyAction) run(i int64) {
+	key, val := a.ta.getRandKnownData()
+	newKey := randKey(10)
+	a.ta.knownData[newKey] = val
+	err := a.ta.db.Copy(key, newKey)
+	require.NoError(a.ta.t, err)
+}

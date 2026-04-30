@@ -37,3 +37,23 @@ func TestGetKeys(t *testing.T) {
 	require.NoError(t, err)
 	assert.Subset(t, result, []string{key1, key2})
 }
+
+func TestCopy(t *testing.T) {
+	t.Parallel()
+
+	api := makeAPI()
+	key1 := randKey(10)
+	key2 := randKey(20)
+	val := "value"
+
+	require.NoError(t, api.set(key1, val))
+	require.NoError(t, api.copy(key1, key2))
+
+	keys, err := api.getKeys()
+	require.NoError(t, err)
+	assert.Subset(t, keys, []string{key1, key2})
+
+	newVal, err := api.get(key2)
+	require.NoError(t, err)
+	assert.Equal(t, fmt.Sprintf("\"%s\"", val), newVal)
+}

@@ -38,3 +38,73 @@ func TestGetKeys(t *testing.T) {
 	require.NoError(t, err)
 	assert.ElementsMatch(t, []string{"k1", "k2"}, keys)
 }
+
+func TestCopyString(t *testing.T) {
+	t.Parallel()
+
+	// ARRANGE
+	k1 := "k1"
+	k2 := "k2"
+	val := "value"
+	db := database.MakeDatabase()
+
+	db.Start()
+	defer db.Stop()
+
+	require.NoError(t, db.Set(k1, val))
+
+	// ACT
+	require.NoError(t, db.Copy(k1, k2))
+
+	// ASSERT
+	keys, err := db.GetKeys()
+	require.NoError(t, err)
+	assert.ElementsMatch(t, []string{k1, k2}, keys)
+
+	result, err := db.Get(k2)
+	require.NoError(t, err)
+	assert.Equal(t, val, result)
+}
+
+func TestCopyNonExistentKeyReturnsError(t *testing.T) {
+	t.Parallel()
+
+	// ARRANGE
+	db := database.MakeDatabase()
+
+	db.Start()
+	defer db.Stop()
+
+	// ACT
+	err := db.Copy("k1", "k2")
+
+	// ASSERT
+	require.Error(t, err)
+	assert.Equal(t, "key not found: k1", err.Error())
+}
+
+func TestCopySrcEqualsDst(t *testing.T) {
+	t.Parallel()
+
+	// ARRANGE
+	key := "k"
+	val := "value"
+	db := database.MakeDatabase()
+
+	db.Start()
+	defer db.Stop()
+
+	require.NoError(t, db.Set(key, val))
+
+	// ACT
+	require.NoError(t, db.Copy(key, key))
+
+	// ASSERT
+	keys, err := db.GetKeys()
+	require.NoError(t, err)
+	assert.Equal(t, []string{key}, keys)
+
+	result, err := db.Get(key)
+	require.NoError(t, err)
+	assert.Equal(t, val, result)
+}

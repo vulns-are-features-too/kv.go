@@ -8,6 +8,7 @@ import (
 type KvDatabase interface {
 	Start()
 	Stop()
+	Copy(srcKey string, dstKey string) error
 	Get(key string) (string, error)
 	GetKeys() ([]string, error)
 	Set(key, value string) error
