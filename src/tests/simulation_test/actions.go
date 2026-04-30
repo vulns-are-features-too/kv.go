@@ -34,6 +34,7 @@ func (a setAction) run(ta testAgent, i int64) {
 	key := fmt.Sprintf("a%d:s%d", ta.id, i)
 	val := strconv.FormatInt(i, 10)
 	ta.knownData[key] = val
+	ta.ctx.t.Logf("[%d] SET %s = %s", ta.id, key, val)
 	err := ta.ctx.db.Set(key, val)
 	require.NoError(ta.ctx.t, err)
 }
@@ -42,6 +43,7 @@ type getAction struct{}
 
 func (a getAction) run(ta testAgent, _ int64) {
 	key, val := ta.getRandKnownData()
+	ta.ctx.t.Logf("[%d] GET %s (expect %s)", ta.id, key, val)
 	result, err := ta.ctx.db.Get(key)
 	require.NoError(ta.ctx.t, err)
 	assert.Equal(ta.ctx.t, val, result)
@@ -50,6 +52,7 @@ func (a getAction) run(ta testAgent, _ int64) {
 type getKeysAction struct{}
 
 func (a getKeysAction) run(ta testAgent, _ int64) {
+	ta.ctx.t.Logf("[%d] GETKEYS", ta.id)
 	allKeys, err := ta.ctx.db.GetKeys()
 	require.NoError(ta.ctx.t, err)
 	ownKeys := common.GetMapKeys(ta.knownData)
@@ -62,6 +65,7 @@ func (a copyAction) run(ta testAgent, _ int64) {
 	key, val := ta.getRandKnownData()
 	newKey := common.RandKey(10)
 	ta.knownData[newKey] = val
+	ta.ctx.t.Logf("[%d] COPY `%s` %s -> %s", ta.id, val, key, newKey)
 	err := ta.ctx.db.Copy(key, newKey)
 	require.NoError(ta.ctx.t, err)
 }
