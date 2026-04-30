@@ -7,6 +7,9 @@ alias ti := integration_test
 alias ts := simulation_test
 alias ta := api_test
 
+set dotenv-load
+set dotenv-path := "./src/.env"
+
 [working-directory: './src']
 run:
   go run .
