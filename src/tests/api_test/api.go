@@ -21,7 +21,7 @@ func makeAPI() testAPI {
 	}
 }
 
-func (api testAPI) req(endpoint, data string) (string, error) {
+func (api testAPI) req(endpoint string, data string) (string, error) {
 	resp, err := http.Post(
 		fmt.Sprintf("%s/%s", api.server, endpoint),
 		"application/x-www-form-urlencoded",
@@ -52,7 +52,7 @@ func (api testAPI) getKeys() ([]string, error) {
 	return strings.Split(res, "\n"), nil
 }
 
-func (api testAPI) set(key, value string) error {
+func (api testAPI) set(key string, value string) error {
 	_, err := api.req("set", fmt.Sprintf("%s=%s", key, value))
 
 	return err
