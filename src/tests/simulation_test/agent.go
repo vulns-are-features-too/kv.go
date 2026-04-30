@@ -44,7 +44,7 @@ func (ta testAgent) run(iterations int64) {
 	setAction{}.run(ta, 0)
 
 	for i := range iterations {
-		ta.ctx.getRandAction().run(ta, i)
+		getRandAction().run(ta, i)
 	}
 }
 

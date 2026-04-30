@@ -3,6 +3,7 @@ package simulation_test
 import (
 	"common"
 	"fmt"
+	"math/rand"
 	"strconv"
 
 	"github.com/stretchr/testify/assert"
@@ -11,6 +12,20 @@ import (
 
 type action interface {
 	run(ta testAgent, iteration int64)
+}
+
+//nolint:gochecknoglobals
+var actions = []action{
+	setAction{},
+	getAction{},
+	getKeysAction{},
+	copyAction{},
+}
+
+//nolint:ireturn
+func getRandAction() action {
+	//nolint:gosec
+	return actions[rand.Intn(len(actions))]
 }
 
 type setAction struct{}
