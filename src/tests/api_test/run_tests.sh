@@ -7,9 +7,13 @@ mv ../../main ./kv
 ./kv &> /dev/null &
 pid=$!
 
+function cleanup() {
+  rm ./kv
+  kill "$pid"
+}
+trap cleanup EXIT
+
 go test
 ret=$?
 
-kill "$pid"
-rm ./kv
 exit "$ret"
