@@ -17,6 +17,7 @@ type action interface {
 //nolint:gochecknoglobals
 var actions = []action{
 	setAction{},
+	setExistingKeyAction{},
 	getAction{},
 	getKeysAction{},
 	copyAction{},
@@ -32,6 +33,17 @@ type setAction struct{}
 
 func (a setAction) run(ta testAgent, i int64) {
 	key := fmt.Sprintf("a%d:s%d", ta.id, i)
+	val := strconv.FormatInt(i, 10)
+	ta.knownData[key] = val
+	ta.ctx.t.Logf("[%d] SET %s = %s", ta.id, key, val)
+	err := ta.ctx.db.Set(key, val)
+	require.NoError(ta.ctx.t, err)
+}
+
+type setExistingKeyAction struct{}
+
+func (a setExistingKeyAction) run(ta testAgent, i int64) {
+	key, _ := ta.getRandKnownData()
 	val := strconv.FormatInt(i, 10)
 	ta.knownData[key] = val
 	ta.ctx.t.Logf("[%d] SET %s = %s", ta.id, key, val)
