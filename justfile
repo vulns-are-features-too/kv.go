@@ -6,6 +6,7 @@ alias tu := unit_test
 alias ti := integration_test
 alias ts := simulation_test
 alias ta := api_test
+alias tp := performance_test
 
 set dotenv-load
 set dotenv-path := "./src/.env"
@@ -44,3 +45,9 @@ test: unit_test integration_test simulation_test api_test
 @api_test:
   echo "Running api tests"
   ./run_tests.sh
+
+[working-directory: './src/tests/performance_test']
+[arg('iterations', pattern='\d+')]
+@performance_test iterations="1":
+  echo "Running performance tests {{iterations}} iteration(s)"
+  for i in {1..{{iterations}}}; do echo; go test -bench=.; done
